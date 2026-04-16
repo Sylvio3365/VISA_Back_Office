@@ -1,4 +1,6 @@
-package com.visa.bo.models.visa;
+package com.visa.bo.models.demande;
+
+import com.visa.bo.models.visa.TypeVisa;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

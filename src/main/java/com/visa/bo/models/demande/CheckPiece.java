@@ -1,6 +1,4 @@
-package com.visa.bo.models.visa;
-
-import com.visa.bo.models.demande.DemandeResident;
+package com.visa.bo.models.demande;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
