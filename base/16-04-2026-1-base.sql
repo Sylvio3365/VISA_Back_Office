@@ -37,6 +37,12 @@ CREATE TABLE piece_complementaire(
    FOREIGN KEY(id_type_visa) REFERENCES type_visa(id_type_visa)
 );
 
+CREATE TABLE piece_commune(
+   id_piece_commune VARCHAR(50),
+   libelle VARCHAR(150) NOT NULL,
+   PRIMARY KEY(id_piece_commune)
+);
+
 CREATE TABLE personne(
    id_personne VARCHAR(50),
    nom VARCHAR(250) NOT NULL,
@@ -92,11 +98,21 @@ CREATE TABLE check_piece_complementaire(
    FOREIGN KEY(id_piece_complementaire) REFERENCES piece_complementaire(id_piece_complementaire)
 );
 
+CREATE TABLE check_piece_commune(
+   id_demande_resident VARCHAR(50),
+   id_piece_commune VARCHAR(50),
+   est_fourni BOOLEAN NOT NULL,
+   PRIMARY KEY(id_demande_resident, id_piece_commune),
+   FOREIGN KEY(id_demande_resident) REFERENCES demande_resident(id_demande_resident),
+   FOREIGN KEY(id_piece_commune) REFERENCES piece_commune(id_piece_commune)
+);
+
 CREATE SEQUENCE seq_type_visa START 1;
 CREATE SEQUENCE seq_passport START 1;
 CREATE SEQUENCE seq_situation_famille START 1;
 CREATE SEQUENCE seq_categorie_demande START 1;
 CREATE SEQUENCE seq_piece_complementaire START 1;
+CREATE SEQUENCE seq_piece_commune START 1;
 CREATE SEQUENCE seq_personne START 1;
 CREATE SEQUENCE seq_demande_resident START 1;
 CREATE SEQUENCE seq_visa START 1;
@@ -127,3 +143,6 @@ ON visa(id_personne);
 
 CREATE INDEX idx_check_piece_piece
 ON check_piece_complementaire(id_piece_complementaire);
+
+CREATE INDEX idx_check_piece_commune_piece
+ON check_piece_commune(id_piece_commune);
