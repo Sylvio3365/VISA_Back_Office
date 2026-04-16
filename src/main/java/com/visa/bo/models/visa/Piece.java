@@ -8,25 +8,25 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "piece_complementaire")
-public class PieceComplementaire {
+@Table(name = "piece")
+public class Piece {
     @Id
-    @Column(name = "id_piece_complementaire", length = 50)
-    private String idPieceComplementaire;
+    @Column(name = "id_piece", length = 50)
+    private String idPiece;
 
-    @Column(name = "libelle", nullable = false, length = 150)
+    @Column(name = "libelle", nullable = false, length = 50)
     private String libelle;
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "id_type_visa", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "id_type_visa")
     private TypeVisa typeVisa;
 
-    public String getIdPieceComplementaire() {
-        return idPieceComplementaire;
+    public String getIdPiece() {
+        return idPiece;
     }
 
-    public void setIdPieceComplementaire(String idPieceComplementaire) {
-        this.idPieceComplementaire = idPieceComplementaire;
+    public void setIdPiece(String idPiece) {
+        this.idPiece = idPiece;
     }
 
     public String getLibelle() {

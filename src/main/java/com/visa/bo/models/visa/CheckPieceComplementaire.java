@@ -11,10 +11,10 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "check_piece_complementaire")
-public class CheckPieceComplementaire {
+@Table(name = "check_piece")
+public class CheckPiece {
     @EmbeddedId
-    private CheckPieceComplementaireId id;
+    private CheckPieceId id;
 
     @ManyToOne(optional = false)
     @MapsId("idDemandeResident")
@@ -22,18 +22,18 @@ public class CheckPieceComplementaire {
     private DemandeResident demandeResident;
 
     @ManyToOne(optional = false)
-    @MapsId("idPieceComplementaire")
-    @JoinColumn(name = "id_piece_complementaire", nullable = false)
-    private PieceComplementaire pieceComplementaire;
+    @MapsId("idPiece")
+    @JoinColumn(name = "id_piece", nullable = false)
+    private Piece piece;
 
-    @Column(name = "est_fourni", nullable = false)
+    @Column(name = "est_fourni")
     private Boolean estFourni;
 
-    public CheckPieceComplementaireId getId() {
+    public CheckPieceId getId() {
         return id;
     }
 
-    public void setId(CheckPieceComplementaireId id) {
+    public void setId(CheckPieceId id) {
         this.id = id;
     }
 
@@ -45,12 +45,12 @@ public class CheckPieceComplementaire {
         this.demandeResident = demandeResident;
     }
 
-    public PieceComplementaire getPieceComplementaire() {
-        return pieceComplementaire;
+    public Piece getPiece() {
+        return piece;
     }
 
-    public void setPieceComplementaire(PieceComplementaire pieceComplementaire) {
-        this.pieceComplementaire = pieceComplementaire;
+    public void setPiece(Piece piece) {
+        this.piece = piece;
     }
 
     public Boolean getEstFourni() {

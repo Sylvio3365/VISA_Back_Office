@@ -6,12 +6,12 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public class CheckPieceCommuneId implements Serializable {
+public class CheckPieceId implements Serializable {
     @Column(name = "id_demande_resident", length = 50)
     private String idDemandeResident;
 
-    @Column(name = "id_piece_commune", length = 50)
-    private String idPieceCommune;
+    @Column(name = "id_piece", length = 50)
+    private String idPiece;
 
     public String getIdDemandeResident() {
         return idDemandeResident;
@@ -21,12 +21,12 @@ public class CheckPieceCommuneId implements Serializable {
         this.idDemandeResident = idDemandeResident;
     }
 
-    public String getIdPieceCommune() {
-        return idPieceCommune;
+    public String getIdPiece() {
+        return idPiece;
     }
 
-    public void setIdPieceCommune(String idPieceCommune) {
-        this.idPieceCommune = idPieceCommune;
+    public void setIdPiece(String idPiece) {
+        this.idPiece = idPiece;
     }
 
     @Override
@@ -37,13 +37,13 @@ public class CheckPieceCommuneId implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        CheckPieceCommuneId that = (CheckPieceCommuneId) o;
+        CheckPieceId that = (CheckPieceId) o;
         return Objects.equals(idDemandeResident, that.idDemandeResident)
-            && Objects.equals(idPieceCommune, that.idPieceCommune);
+            && Objects.equals(idPiece, that.idPiece);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idDemandeResident, idPieceCommune);
+        return Objects.hash(idDemandeResident, idPiece);
     }
 }

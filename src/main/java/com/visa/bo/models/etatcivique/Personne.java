@@ -2,8 +2,6 @@ package com.visa.bo.models.etatcivique;
 
 import java.time.LocalDate;
 
-import com.visa.bo.models.passport.Passport;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -24,9 +22,6 @@ public class Personne {
     @Column(name = "prenom", nullable = false, length = 250)
     private String prenom;
 
-    @Column(name = "nationalite", nullable = false, length = 150)
-    private String nationalite;
-
     @Column(name = "profession", nullable = false, length = 50)
     private String profession;
 
@@ -46,8 +41,8 @@ public class Personne {
     private String telephone;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "id_passport", nullable = false)
-    private Passport passport;
+    @JoinColumn(name = "id_nationalite", nullable = false)
+    private Nationalite nationalite;
 
     @ManyToOne(optional = false)
     @JoinColumn(name = "id_situation_famille", nullable = false)
@@ -75,14 +70,6 @@ public class Personne {
 
     public void setPrenom(String prenom) {
         this.prenom = prenom;
-    }
-
-    public String getNationalite() {
-        return nationalite;
-    }
-
-    public void setNationalite(String nationalite) {
-        this.nationalite = nationalite;
     }
 
     public String getProfession() {
@@ -133,12 +120,12 @@ public class Personne {
         this.telephone = telephone;
     }
 
-    public Passport getPassport() {
-        return passport;
+    public Nationalite getNationalite() {
+        return nationalite;
     }
 
-    public void setPassport(Passport passport) {
-        this.passport = passport;
+    public void setNationalite(Nationalite nationalite) {
+        this.nationalite = nationalite;
     }
 
     public SituationFamille getSituationFamille() {

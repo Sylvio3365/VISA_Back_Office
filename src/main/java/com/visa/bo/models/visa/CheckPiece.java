@@ -11,10 +11,10 @@ import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "check_piece_commune")
-public class CheckPieceCommune {
+@Table(name = "check_piece")
+public class CheckPiece {
     @EmbeddedId
-    private CheckPieceCommuneId id;
+    private CheckPieceId id;
 
     @ManyToOne(optional = false)
     @MapsId("idDemandeResident")
@@ -22,18 +22,18 @@ public class CheckPieceCommune {
     private DemandeResident demandeResident;
 
     @ManyToOne(optional = false)
-    @MapsId("idPieceCommune")
-    @JoinColumn(name = "id_piece_commune", nullable = false)
-    private PieceCommune pieceCommune;
+    @MapsId("idPiece")
+    @JoinColumn(name = "id_piece", nullable = false)
+    private Piece piece;
 
-    @Column(name = "est_fourni", nullable = false)
+    @Column(name = "est_fourni")
     private Boolean estFourni;
 
-    public CheckPieceCommuneId getId() {
+    public CheckPieceId getId() {
         return id;
     }
 
-    public void setId(CheckPieceCommuneId id) {
+    public void setId(CheckPieceId id) {
         this.id = id;
     }
 
@@ -45,12 +45,12 @@ public class CheckPieceCommune {
         this.demandeResident = demandeResident;
     }
 
-    public PieceCommune getPieceCommune() {
-        return pieceCommune;
+    public Piece getPiece() {
+        return piece;
     }
 
-    public void setPieceCommune(PieceCommune pieceCommune) {
-        this.pieceCommune = pieceCommune;
+    public void setPiece(Piece piece) {
+        this.piece = piece;
     }
 
     public Boolean getEstFourni() {

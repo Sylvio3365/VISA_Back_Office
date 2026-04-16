@@ -6,12 +6,12 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
-public class CheckPieceComplementaireId implements Serializable {
+public class CheckPieceId implements Serializable {
     @Column(name = "id_demande_resident", length = 50)
     private String idDemandeResident;
 
-    @Column(name = "id_piece_complementaire", length = 50)
-    private String idPieceComplementaire;
+    @Column(name = "id_piece", length = 50)
+    private String idPiece;
 
     public String getIdDemandeResident() {
         return idDemandeResident;
@@ -21,12 +21,12 @@ public class CheckPieceComplementaireId implements Serializable {
         this.idDemandeResident = idDemandeResident;
     }
 
-    public String getIdPieceComplementaire() {
-        return idPieceComplementaire;
+    public String getIdPiece() {
+        return idPiece;
     }
 
-    public void setIdPieceComplementaire(String idPieceComplementaire) {
-        this.idPieceComplementaire = idPieceComplementaire;
+    public void setIdPiece(String idPiece) {
+        this.idPiece = idPiece;
     }
 
     @Override
@@ -37,13 +37,13 @@ public class CheckPieceComplementaireId implements Serializable {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        CheckPieceComplementaireId that = (CheckPieceComplementaireId) o;
+        CheckPieceId that = (CheckPieceId) o;
         return Objects.equals(idDemandeResident, that.idDemandeResident)
-            && Objects.equals(idPieceComplementaire, that.idPieceComplementaire);
+            && Objects.equals(idPiece, that.idPiece);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(idDemandeResident, idPieceComplementaire);
+        return Objects.hash(idDemandeResident, idPiece);
     }
 }
