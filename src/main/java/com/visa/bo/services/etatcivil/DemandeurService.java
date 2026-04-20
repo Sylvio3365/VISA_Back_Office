@@ -125,7 +125,7 @@ public class DemandeurService {
 
     private Demandeur creerOuRechercharDemandeur(DemandeForm dm) {
         String idDemandeur = dm.getIdDemandeur();
-        System.out.println("====>>>>> "+idDemandeur);
+        System.out.println("====>>>>> " + idDemandeur);
         Demandeur demandeur;
 
         // Chercher ou créer le demandeur
@@ -177,40 +177,68 @@ public class DemandeurService {
     }
 
     private Passport creerOuRechercharPassport(DemandeForm dm, Demandeur demandeur) {
-        Passport passport = new Passport();
-        if (dm.getIdPassport() != null && dm.getIdPassport() != "") {
-            passport = passportRepository.findById(dm.getIdPassport()).orElseThrow(
+        if (dm.getIdPassport() != null && !dm.getIdPassport().isBlank()) {
+            Passport passportExistant = passportRepository.findById(dm.getIdPassport()).orElseThrow(
                     () -> new IllegalArgumentException("Passport introuvable: " + dm.getIdPassport()));
-        } else {
-            passport.setIdPassport(Passport.nextId());
-            passport.setNumero(dm.getNumPassport());
-            passport.setDelivreLe(dm.getDateDelivrancePassport());
-            passport.setExpireLe(dm.getDateExpirationPassport());
-            passport.setDemandeur(demandeur);
-            passportRepository.save(passport);
+
+            // Si le numero change, on cree un nouveau passport rattache au demandeur.
+            if (dm.getNumPassport() != null && !dm.getNumPassport().equals(passportExistant.getNumero())) {
+                Passport nouveauPassport = new Passport();
+                nouveauPassport.setIdPassport(Passport.nextId());
+                nouveauPassport.setNumero(dm.getNumPassport());
+                nouveauPassport.setDelivreLe(dm.getDateDelivrancePassport());
+                nouveauPassport.setExpireLe(dm.getDateExpirationPassport());
+                nouveauPassport.setDemandeur(demandeur);
+                return passportRepository.save(nouveauPassport);
+            }
+
+            return passportExistant;
         }
-        return passport;
+
+        Passport passport = new Passport();
+        passport.setIdPassport(Passport.nextId());
+        passport.setNumero(dm.getNumPassport());
+        passport.setDelivreLe(dm.getDateDelivrancePassport());
+        passport.setExpireLe(dm.getDateExpirationPassport());
+        passport.setDemandeur(demandeur);
+        return passportRepository.save(passport);
     }
 
     private VisaTransformable creerOuRechercharVisaTransformable(DemandeForm dm, Demandeur demandeur,
             Passport passport) {
-        VisaTransformable visaTransformable = new VisaTransformable();
         if (dm.getIdVisaTransformable() != null && !dm.getIdVisaTransformable().isBlank()) {
-            visaTransformable = visaTransformableRepository.findById(dm.getIdVisaTransformable()).orElseThrow(
-                    () -> new IllegalArgumentException("Visa Transformable introuvable: " + dm.getIdVisaTransformable()));
-        } else {
-            visaTransformable.setIdVisaTransformable(VisaTransformable.nextId());
-            visaTransformable.setRefVisa(dm.getRefVisa());
-            visaTransformable.setDateDebut(dm.getDateDebut());
-            visaTransformable.setDateFin(dm.getDateFin());
-            visaTransformable.setPassport(passport);
-            visaTransformable.setDemandeur(demandeur);
-            visaTransformableRepository.save(visaTransformable);
+            VisaTransformable visaTransformableExistant = visaTransformableRepository
+                    .findById(dm.getIdVisaTransformable()).orElseThrow(
+                            () -> new IllegalArgumentException(
+                                    "Visa Transformable introuvable: " + dm.getIdVisaTransformable()));
+
+            // Si la reference change, on cree un nouveau visa transformable.
+            if (dm.getRefVisa() != null && !dm.getRefVisa().equals(visaTransformableExistant.getRefVisa())) {
+                VisaTransformable nouveauVisaTransformable = new VisaTransformable();
+                nouveauVisaTransformable.setIdVisaTransformable(VisaTransformable.nextId());
+                nouveauVisaTransformable.setRefVisa(dm.getRefVisa());
+                nouveauVisaTransformable.setDateDebut(dm.getDateDebut());
+                nouveauVisaTransformable.setDateFin(dm.getDateFin());
+                nouveauVisaTransformable.setPassport(passport);
+                nouveauVisaTransformable.setDemandeur(demandeur);
+                return visaTransformableRepository.save(nouveauVisaTransformable);
+            }
+
+            return visaTransformableExistant;
         }
-        return visaTransformable;
+
+        VisaTransformable visaTransformable = new VisaTransformable();
+        visaTransformable.setIdVisaTransformable(VisaTransformable.nextId());
+        visaTransformable.setRefVisa(dm.getRefVisa());
+        visaTransformable.setDateDebut(dm.getDateDebut());
+        visaTransformable.setDateFin(dm.getDateFin());
+        visaTransformable.setPassport(passport);
+        visaTransformable.setDemandeur(demandeur);
+        return visaTransformableRepository.save(visaTransformable);
     }
 
-    private Demande creerDemande(DemandeForm dm, Demandeur demandeur, Passport passport, VisaTransformable visaTransformable) {
+    private Demande creerDemande(DemandeForm dm, Demandeur demandeur, Passport passport,
+            VisaTransformable visaTransformable) {
         // Créer et insérer un objet de type Demande
         Demande demande = new Demande();
         demande.setIdDemande(Demande.nextId());
