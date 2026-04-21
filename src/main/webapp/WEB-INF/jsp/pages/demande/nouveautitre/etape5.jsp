@@ -20,7 +20,7 @@
 
                             <form method="POST" action="${pageContext.request.contextPath}/demande/etape5">
                                 <div class="mb-4">
-                                    <label for="idTypeVisa" class="form-label"><i class="fas fa-list me-2"></i>Type de visa</label>
+                                    <label for="idTypeVisa" class="form-label"><i class="fas fa-list me-2"></i>Type de visa <c:if test="${requiredFieldMap['idTypeVisa']}"><span class="text-danger">*</span></c:if></label>
                                     <select id="idTypeVisa" name="idTypeVisa" class="form-select form-select">
                                         <option value="">-- Sélectionner un type de visa --</option>
                                         <c:forEach var="typeVisa" items="${typesVisa}">

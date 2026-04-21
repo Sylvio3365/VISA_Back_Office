@@ -64,6 +64,60 @@
         border-top: 1px dashed rgba(15, 23, 42, 0.14);
         padding-top: 0.9rem;
     }
+
+    .type-visa-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        padding: 0.32rem 0.62rem;
+        border-radius: 999px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        color: var(--accent-strong, #0a6d61);
+        background: rgba(12, 138, 123, 0.12);
+        border: 1px solid rgba(12, 138, 123, 0.35);
+    }
+
+    .type-visa-badge.badge-travailleur {
+        color: #0a6d61;
+        background: rgba(12, 138, 123, 0.14);
+        border-color: rgba(12, 138, 123, 0.4);
+    }
+
+    .type-visa-badge.badge-investisseur {
+        color: #1d4ed8;
+        background: rgba(37, 99, 235, 0.13);
+        border-color: rgba(37, 99, 235, 0.35);
+    }
+
+    .type-visa-badge.badge-default {
+        color: #475569;
+        background: rgba(100, 116, 139, 0.12);
+        border-color: rgba(100, 116, 139, 0.3);
+    }
+
+    .btn-detail-icon {
+        width: 2rem;
+        height: 2rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 999px;
+        border: 1px solid rgba(12, 138, 123, 0.35);
+        color: var(--accent-strong, #0a6d61);
+        background: rgba(12, 138, 123, 0.08);
+        transition: all 0.18s ease;
+        text-decoration: none;
+    }
+
+    .btn-detail-icon:hover,
+    .btn-detail-icon:focus {
+        color: #fff;
+        background: var(--accent, #0c8a7b);
+        border-color: var(--accent, #0c8a7b);
+        box-shadow: 0 0 0 0.16rem var(--ring, rgba(12, 138, 123, 0.2));
+        text-decoration: none;
+    }
 </style>
 
 <div class="nt-page">
@@ -258,7 +312,19 @@
                                 <td>
                                     <c:choose>
                                         <c:when test="${not empty item.demande.typeVisa}">
-                                            ${item.demande.typeVisa.libelle}
+                                            <c:set var="visaBadgeClass" value="badge-default" />
+                                            <c:choose>
+                                                <c:when test="${item.demande.typeVisa.idTypeVisa eq 'TV000001' || item.demande.typeVisa.libelle eq 'Travailleur'}">
+                                                    <c:set var="visaBadgeClass" value="badge-travailleur" />
+                                                </c:when>
+                                                <c:when test="${item.demande.typeVisa.idTypeVisa eq 'TV000002' || item.demande.typeVisa.libelle eq 'Investisseur'}">
+                                                    <c:set var="visaBadgeClass" value="badge-investisseur" />
+                                                </c:when>
+                                            </c:choose>
+                                            <span class="type-visa-badge ${visaBadgeClass}">
+                                                <i class="fas fa-id-card" aria-hidden="true"></i>
+                                                ${item.demande.typeVisa.libelle}
+                                            </span>
                                         </c:when>
                                         <c:otherwise>-</c:otherwise>
                                     </c:choose>
@@ -268,7 +334,9 @@
                                     <span class="badge text-bg-light border">${item.statut}</span>
                                 </td>
                                 <td class="text-end">
-                                    <a class="btn btn-outline-primary btn-sm" href="${detailUrl}">Voir detail</a>
+                                    <a class="btn-detail-icon" href="${detailUrl}" aria-label="Voir detail" title="Voir detail">
+                                        <i class="fas fa-eye" aria-hidden="true"></i>
+                                    </a>
                                 </td>
                             </tr>
                         </c:forEach>
