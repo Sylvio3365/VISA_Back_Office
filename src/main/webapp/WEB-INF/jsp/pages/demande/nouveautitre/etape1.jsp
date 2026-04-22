@@ -36,31 +36,31 @@
                             <form method="POST" action="${pageContext.request.contextPath}/demande/etape1">
                                 <div class="row mb-3">
                                     <div class="col-md-6">
-                                        <label for="nom" class="form-label"><i class="fas fa-font me-2"></i>Nom</label>
+                                        <label for="nom" class="form-label"><i class="fas fa-font me-2"></i>Nom <c:if test="${requiredFieldMap['nom']}"><span class="text-danger">*</span></c:if></label>
                                         <input type="text" class="form-control" id="nom" name="nom"
                                             value="${not empty demandeForm.nom ? demandeForm.nom : ''}" >
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="prenom" class="form-label"><i class="fas fa-font me-2"></i>Prénom</label>
+                                        <label for="prenom" class="form-label"><i class="fas fa-font me-2"></i>Prénom <c:if test="${requiredFieldMap['prenom']}"><span class="text-danger">*</span></c:if></label>
                                         <input type="text" class="form-control" id="prenom" name="prenom"
                                             value="${not empty demandeForm.prenom ? demandeForm.prenom : ''}" >
                                     </div>
                                 </div>
 
                                 <div class="mb-3">
-                                    <label for="nomJeuneFille" class="form-label"><i class="fas fa-font me-2"></i>Nom de jeune fille</label>
+                                    <label for="nomJeuneFille" class="form-label"><i class="fas fa-font me-2"></i>Nom de jeune fille <c:if test="${requiredFieldMap['nomJeuneFille']}"><span class="text-danger">*</span></c:if></label>
                                     <input type="text" class="form-control" id="nomJeuneFille" name="nomJeuneFille"
                                         value="${not empty demandeForm.nomJeuneFille ? demandeForm.nomJeuneFille : ''}">
                                 </div>
 
                                 <div class="row mb-3">
                                     <div class="col-md-6">
-                                        <label for="dtn" class="form-label"><i class="fas fa-calendar me-2"></i>Date de naissance</label>
+                                        <label for="dtn" class="form-label"><i class="fas fa-calendar me-2"></i>Date de naissance <c:if test="${requiredFieldMap['dtn']}"><span class="text-danger">*</span></c:if></label>
                                         <input type="date" class="form-control" id="dtn" name="dtn"
                                             value="${not empty demandeForm.dtn ? demandeForm.dtn : ''}" >
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="email" class="form-label"><i class="fas fa-envelope me-2"></i>Email</label>
+                                        <label for="email" class="form-label"><i class="fas fa-envelope me-2"></i>Email <c:if test="${requiredFieldMap['email']}"><span class="text-danger">*</span></c:if></label>
                                         <input type="email" class="form-control" id="email" name="email"
                                             value="${not empty demandeForm.email ? demandeForm.email : ''}" >
                                     </div>
@@ -68,12 +68,12 @@
 
                                 <div class="row mb-3">
                                     <div class="col-md-6">
-                                        <label for="telephone" class="form-label"><i class="fas fa-phone me-2"></i>Téléphone</label>
+                                        <label for="telephone" class="form-label"><i class="fas fa-phone me-2"></i>Téléphone <c:if test="${requiredFieldMap['telephone']}"><span class="text-danger">*</span></c:if></label>
                                         <input type="tel" class="form-control" id="telephone" name="telephone"
                                             value="${not empty demandeForm.telephone ? demandeForm.telephone : ''}">
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="idNationalite" class="form-label"><i class="fas fa-globe me-2"></i>Nationalité</label>
+                                        <label for="idNationalite" class="form-label"><i class="fas fa-globe me-2"></i>Nationalité <c:if test="${requiredFieldMap['idNationalite']}"><span class="text-danger">*</span></c:if></label>
                                         <select id="idNationalite" name="idNationalite" class="form-select" >
                                             <option value="">-- Sélectionner --</option>
                                             <c:forEach var="nat" items="${nationalites}">
@@ -87,7 +87,7 @@
 
                                 <div class="row mb-3">
                                     <div class="col-md-6">
-                                        <label for="idSituationFamille" class="form-label"><i class="fas fa-home me-2"></i>Situation familiale</label>
+                                        <label for="idSituationFamille" class="form-label"><i class="fas fa-home me-2"></i>Situation familiale <c:if test="${requiredFieldMap['idSituationFamille']}"><span class="text-danger">*</span></c:if></label>
                                         <select id="idSituationFamille" name="idSituationFamille" class="form-select" >
                                             <option value="">-- Sélectionner --</option>
                                             <c:forEach var="sf" items="${situation_familles}">
@@ -100,7 +100,7 @@
                                 </div>
 
                                 <div class="mb-4">
-                                    <label for="adresseMada" class="form-label"><i class="fas fa-map-marker-alt me-2"></i>Adresse (Madagascar)</label>
+                                    <label for="adresseMada" class="form-label"><i class="fas fa-map-marker-alt me-2"></i>Adresse (Madagascar) <c:if test="${requiredFieldMap['adresseMada']}"><span class="text-danger">*</span></c:if></label>
                                     <textarea id="adresseMada" name="adresseMada" class="form-control" rows="2"
                                         placeholder="Entrez votre adresse">${not empty demandeForm.adresseMada ? demandeForm.adresseMada : ''}</textarea>
                                 </div>

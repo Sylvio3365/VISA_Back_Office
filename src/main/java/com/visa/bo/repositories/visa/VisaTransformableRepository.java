@@ -10,6 +10,8 @@ import com.visa.bo.models.visa.VisaTransformable;
 
 public interface VisaTransformableRepository extends JpaRepository<VisaTransformable, String> {
 
+    Optional<VisaTransformable> findByRefVisa(String refVisa);
+
     @Query("SELECT v FROM VisaTransformable v WHERE v.refVisa = :refVisa AND v.passport.idPassport = :idPassport AND v.demandeur.idDemandeur = :idDemandeur")
     Optional<VisaTransformable> findByRefVisaAndIdPassportAndIdDemandeur(@Param("refVisa") String refVisa, @Param("idPassport") String idPassport, @Param("idDemandeur") String idDemandeur);
 

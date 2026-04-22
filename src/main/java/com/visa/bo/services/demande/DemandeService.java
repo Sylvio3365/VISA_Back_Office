@@ -2,6 +2,7 @@ package com.visa.bo.services.demande;
 
 import java.util.Optional;
 import java.util.List;
+import java.util.ArrayList;
 import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.visa.bo.models.demande.Demande;
+import com.visa.bo.models.piece.CheckPiece;
 import com.visa.bo.repositories.demande.DemandeRepository;
+import com.visa.bo.repositories.piece.CheckPieceRepository;
 
 @Service
 public class DemandeService {
@@ -21,6 +24,9 @@ public class DemandeService {
 
     @Autowired
     private DemandeRepository demandeRepository;
+
+    @Autowired
+    private CheckPieceRepository checkPieceRepository;
 
     public Page<DemandeListItem> findPaginatedDemandes(
             int page,
@@ -63,7 +69,29 @@ public class DemandeService {
                 .map(this::normalizeStatus)
                 .orElse("-");
 
-        return Optional.of(new DemandeDetail(demandeOpt.get(), status));
+        List<CheckPiece> checkPieces = checkPieceRepository.findByDemandeIdDemande(normalizedId);
+        List<PieceDetailItem> piecesCommunes = new ArrayList<>();
+        List<PieceDetailItem> piecesComplementaires = new ArrayList<>();
+
+        for (CheckPiece checkPiece : checkPieces) {
+            if (checkPiece.getPiece() == null) {
+                continue;
+            }
+
+            PieceDetailItem item = new PieceDetailItem(
+                    checkPiece.getPiece().getIdPiece(),
+                    checkPiece.getPiece().getLibelle(),
+                    checkPiece.getPiece().isObligatoire(),
+                    Boolean.TRUE.equals(checkPiece.getEstFourni()));
+
+            if (checkPiece.getPiece().getTypeVisa() == null) {
+                piecesCommunes.add(item);
+            } else {
+                piecesComplementaires.add(item);
+            }
+        }
+
+        return Optional.of(new DemandeDetail(demandeOpt.get(), status, piecesCommunes, piecesComplementaires));
     }
 
     private String normalizeStatus(String status) {
@@ -102,10 +130,15 @@ public class DemandeService {
     public static class DemandeDetail {
         private final Demande demande;
         private final String statut;
+        private final List<PieceDetailItem> piecesCommunes;
+        private final List<PieceDetailItem> piecesComplementaires;
 
-        public DemandeDetail(Demande demande, String statut) {
+        public DemandeDetail(Demande demande, String statut, List<PieceDetailItem> piecesCommunes,
+                List<PieceDetailItem> piecesComplementaires) {
             this.demande = demande;
             this.statut = statut;
+            this.piecesCommunes = piecesCommunes;
+            this.piecesComplementaires = piecesComplementaires;
         }
 
         public Demande getDemande() {
@@ -114,6 +147,44 @@ public class DemandeService {
 
         public String getStatut() {
             return statut;
+        }
+
+        public List<PieceDetailItem> getPiecesCommunes() {
+            return piecesCommunes;
+        }
+
+        public List<PieceDetailItem> getPiecesComplementaires() {
+            return piecesComplementaires;
+        }
+    }
+
+    public static class PieceDetailItem {
+        private final String idPiece;
+        private final String libelle;
+        private final boolean obligatoire;
+        private final boolean fourni;
+
+        public PieceDetailItem(String idPiece, String libelle, boolean obligatoire, boolean fourni) {
+            this.idPiece = idPiece;
+            this.libelle = libelle;
+            this.obligatoire = obligatoire;
+            this.fourni = fourni;
+        }
+
+        public String getIdPiece() {
+            return idPiece;
+        }
+
+        public String getLibelle() {
+            return libelle;
+        }
+
+        public boolean isObligatoire() {
+            return obligatoire;
+        }
+
+        public boolean isFourni() {
+            return fourni;
         }
     }
 }

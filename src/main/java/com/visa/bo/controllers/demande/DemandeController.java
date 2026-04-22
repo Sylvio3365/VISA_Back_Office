@@ -2,8 +2,10 @@ package com.visa.bo.controllers.demande;
 
 import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -196,6 +198,8 @@ public class DemandeController {
         model.addAttribute("demandeDetail", demandeDetail);
         model.addAttribute("demande", demande);
         model.addAttribute("demandeStatus", demandeDetail.getStatut());
+        model.addAttribute("piecesCommunes", demandeDetail.getPiecesCommunes());
+        model.addAttribute("piecesComplementaires", demandeDetail.getPiecesComplementaires());
         model.addAttribute("demandesBackUrl",
             buildDemandesBackUrl(pageParam, sizeParam, statusParam, searchParam, startDateParam, endDateParam,
                 typeVisaParam));
@@ -431,6 +435,8 @@ public class DemandeController {
         model.addAttribute("currentStep", form.getCurrentStep());
         model.addAttribute("nationalites", nationaliteService.findAll());
         model.addAttribute("situation_familles", situationFamilleService.findAll());
+        addRequiredFieldMap(model, "nom", "prenom", "nomJeuneFille", "dtn", "email", "telephone",
+                "idNationalite", "idSituationFamille", "adresseMada");
         return "layout/main";
     }
 
@@ -482,6 +488,7 @@ public class DemandeController {
         setupview(model, "nouveau-titre", "Nouvelle demande - Étape 2", pageActuel);
         form.setCurrentStep("Passport");
         model.addAttribute("currentStep", form.getCurrentStep());
+        addRequiredFieldMap(model, "numPassport", "dateDelivrancePassport", "dateExpirationPassport");
         return "layout/main";
     }
 
@@ -528,6 +535,7 @@ public class DemandeController {
         setupview(model, "nouveau-titre", "Nouvelle demande - Étape 3", pageActuel);
         form.setCurrentStep("Visa Transformable");
         model.addAttribute("currentStep", form.getCurrentStep());
+        addRequiredFieldMap(model, "refVisa", "dateDebut", "dateFin");
         return "layout/main";
     }
 
@@ -598,6 +606,7 @@ public class DemandeController {
         form.setCurrentStep("Type Visa");
         model.addAttribute("currentStep", form.getCurrentStep());
         model.addAttribute("typesVisa", typeVisaService.findAll());
+        addRequiredFieldMap(model, "idTypeVisa");
         return "layout/main";
     }
 
@@ -685,7 +694,7 @@ public class DemandeController {
             return "layout/main";
         }
 
-        return "layout/main";
+        return "redirect:/demandes/" + form.getIdDemande();
     }
 
     public void setupview(Model m, String activePage, String pageTitle, String pageActuel) {
@@ -698,6 +707,17 @@ public class DemandeController {
         m.addAttribute("backHref", "#");
         m.addAttribute("backLabel", "");
         m.addAttribute("contentPage", pageActuel);
+    }
+
+    private void addRequiredFieldMap(Model model, String... fieldNames) {
+        Set<String> requiredFields = champsValidationService.getRequiredFieldNames();
+        Map<String, Boolean> requiredFieldMap = new HashMap<>();
+
+        for (String fieldName : fieldNames) {
+            requiredFieldMap.put(fieldName, requiredFields.contains(fieldName));
+        }
+
+        model.addAttribute("requiredFieldMap", requiredFieldMap);
     }
 
 }

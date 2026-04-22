@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -178,55 +179,67 @@ public class DemandeurService {
 
     private Passport creerOuRechercharPassport(DemandeForm dm, Demandeur demandeur) {
         if (dm.getIdPassport() != null && !dm.getIdPassport().isBlank()) {
-            Passport passportExistant = passportRepository.findById(dm.getIdPassport()).orElseThrow(
-                    () -> new IllegalArgumentException("Passport introuvable: " + dm.getIdPassport()));
+            Optional<Passport> passportExistantOpt = passportRepository.findById(dm.getIdPassport());
+            if (passportExistantOpt.isPresent()) {
+                Passport passportExistant = passportExistantOpt.get();
 
-            // Si le numero change, on cree un nouveau passport rattache au demandeur.
-            if (dm.getNumPassport() != null && !dm.getNumPassport().equals(passportExistant.getNumero())) {
-                Passport nouveauPassport = new Passport();
-                nouveauPassport.setIdPassport(Passport.nextId());
-                nouveauPassport.setNumero(dm.getNumPassport());
-                nouveauPassport.setDelivreLe(dm.getDateDelivrancePassport());
-                nouveauPassport.setExpireLe(dm.getDateExpirationPassport());
-                nouveauPassport.setDemandeur(demandeur);
-                return passportRepository.save(nouveauPassport);
+                // Si le numero change, on cree un nouveau passport rattache au demandeur.
+                if (dm.getNumPassport() != null && !dm.getNumPassport().equals(passportExistant.getNumero())) {
+                    verifierNumeroPassportUnique(dm.getNumPassport(), null);
+                    Passport nouveauPassport = new Passport();
+                    nouveauPassport.setIdPassport(Passport.nextId());
+                    nouveauPassport.setNumero(dm.getNumPassport());
+                    nouveauPassport.setDelivreLe(dm.getDateDelivrancePassport());
+                    nouveauPassport.setExpireLe(dm.getDateExpirationPassport());
+                    nouveauPassport.setDemandeur(demandeur);
+                    return sauvegarderPassport(nouveauPassport);
+                }
+
+                return passportExistant;
             }
-
-            return passportExistant;
+            // ID en session devenu invalide (ex: rollback). On l'ignore et on recree/recherche proprement.
+            dm.setIdPassport(null);
         }
 
+        verifierNumeroPassportUnique(dm.getNumPassport(), null);
         Passport passport = new Passport();
         passport.setIdPassport(Passport.nextId());
         passport.setNumero(dm.getNumPassport());
         passport.setDelivreLe(dm.getDateDelivrancePassport());
         passport.setExpireLe(dm.getDateExpirationPassport());
         passport.setDemandeur(demandeur);
-        return passportRepository.save(passport);
+        return sauvegarderPassport(passport);
     }
 
     private VisaTransformable creerOuRechercharVisaTransformable(DemandeForm dm, Demandeur demandeur,
             Passport passport) {
         if (dm.getIdVisaTransformable() != null && !dm.getIdVisaTransformable().isBlank()) {
-            VisaTransformable visaTransformableExistant = visaTransformableRepository
-                    .findById(dm.getIdVisaTransformable()).orElseThrow(
-                            () -> new IllegalArgumentException(
-                                    "Visa Transformable introuvable: " + dm.getIdVisaTransformable()));
+            Optional<VisaTransformable> visaTransformableExistantOpt = visaTransformableRepository
+                    .findById(dm.getIdVisaTransformable());
+            if (visaTransformableExistantOpt.isPresent()) {
+                VisaTransformable visaTransformableExistant = visaTransformableExistantOpt.get();
 
-            // Si la reference change, on cree un nouveau visa transformable.
-            if (dm.getRefVisa() != null && !dm.getRefVisa().equals(visaTransformableExistant.getRefVisa())) {
-                VisaTransformable nouveauVisaTransformable = new VisaTransformable();
-                nouveauVisaTransformable.setIdVisaTransformable(VisaTransformable.nextId());
-                nouveauVisaTransformable.setRefVisa(dm.getRefVisa());
-                nouveauVisaTransformable.setDateDebut(dm.getDateDebut());
-                nouveauVisaTransformable.setDateFin(dm.getDateFin());
-                nouveauVisaTransformable.setPassport(passport);
-                nouveauVisaTransformable.setDemandeur(demandeur);
-                return visaTransformableRepository.save(nouveauVisaTransformable);
+                // Si la reference change, on cree un nouveau visa transformable.
+                if (dm.getRefVisa() != null && !dm.getRefVisa().equals(visaTransformableExistant.getRefVisa())) {
+                    verifierRefVisaUnique(dm.getRefVisa(), null);
+                    VisaTransformable nouveauVisaTransformable = new VisaTransformable();
+                    nouveauVisaTransformable.setIdVisaTransformable(VisaTransformable.nextId());
+                    nouveauVisaTransformable.setRefVisa(dm.getRefVisa());
+                    nouveauVisaTransformable.setDateDebut(dm.getDateDebut());
+                    nouveauVisaTransformable.setDateFin(dm.getDateFin());
+                    nouveauVisaTransformable.setPassport(passport);
+                    nouveauVisaTransformable.setDemandeur(demandeur);
+                    return sauvegarderVisaTransformable(nouveauVisaTransformable);
+                }
+
+                return visaTransformableExistant;
             }
 
-            return visaTransformableExistant;
+            // ID en session devenu invalide (ex: rollback). On l'ignore et on recree/recherche proprement.
+            dm.setIdVisaTransformable(null);
         }
 
+        verifierRefVisaUnique(dm.getRefVisa(), null);
         VisaTransformable visaTransformable = new VisaTransformable();
         visaTransformable.setIdVisaTransformable(VisaTransformable.nextId());
         visaTransformable.setRefVisa(dm.getRefVisa());
@@ -234,7 +247,47 @@ public class DemandeurService {
         visaTransformable.setDateFin(dm.getDateFin());
         visaTransformable.setPassport(passport);
         visaTransformable.setDemandeur(demandeur);
-        return visaTransformableRepository.save(visaTransformable);
+        return sauvegarderVisaTransformable(visaTransformable);
+    }
+
+    private void verifierNumeroPassportUnique(String numeroPassport, String currentPassportId) {
+        if (numeroPassport == null || numeroPassport.isBlank()) {
+            return;
+        }
+
+        Optional<Passport> existing = passportRepository.findByNumero(numeroPassport);
+        if (existing.isPresent()
+                && (currentPassportId == null || !existing.get().getIdPassport().equals(currentPassportId))) {
+            throw new ValidationException("Le numero de passeport '" + numeroPassport + "' existe deja.");
+        }
+    }
+
+    private void verifierRefVisaUnique(String refVisa, String currentVisaId) {
+        if (refVisa == null || refVisa.isBlank()) {
+            return;
+        }
+
+        Optional<VisaTransformable> existing = visaTransformableRepository.findByRefVisa(refVisa);
+        if (existing.isPresent()
+                && (currentVisaId == null || !existing.get().getIdVisaTransformable().equals(currentVisaId))) {
+            throw new ValidationException("La reference visa '" + refVisa + "' existe deja.");
+        }
+    }
+
+    private Passport sauvegarderPassport(Passport passport) {
+        try {
+            return passportRepository.save(passport);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ValidationException("Le numero de passeport '" + passport.getNumero() + "' existe deja.");
+        }
+    }
+
+    private VisaTransformable sauvegarderVisaTransformable(VisaTransformable visaTransformable) {
+        try {
+            return visaTransformableRepository.save(visaTransformable);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ValidationException("La reference visa '" + visaTransformable.getRefVisa() + "' existe deja.");
+        }
     }
 
     private Demande creerDemande(DemandeForm dm, Demandeur demandeur, Passport passport,

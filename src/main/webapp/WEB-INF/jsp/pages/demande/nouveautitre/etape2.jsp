@@ -20,7 +20,7 @@
 
                             <form method="POST" action="${pageContext.request.contextPath}/demande/etape2">
                                 <div class="mb-4">
-                                    <label for="numPassport" class="form-label"><i class="fas fa-barcode me-2"></i>Numéro de passeport</label>
+                                    <label for="numPassport" class="form-label"><i class="fas fa-barcode me-2"></i>Numéro de passeport <c:if test="${requiredFieldMap['numPassport']}"><span class="text-danger">*</span></c:if></label>
                                     <div class="input-group">
                                         <input type="text" class="form-control" id="numPassport" name="numPassport"
                                             value="${not empty demandeForm.numPassport ? demandeForm.numPassport : ''}" placeholder="Ex: PASS2025">
@@ -32,12 +32,12 @@
 
                                 <div class="row mb-4">
                                     <div class="col-md-6">
-                                        <label for="dateDelivrancePassport" class="form-label"><i class="fas fa-calendar-plus me-2"></i>Date de délivrance</label>
+                                        <label for="dateDelivrancePassport" class="form-label"><i class="fas fa-calendar-plus me-2"></i>Date de délivrance <c:if test="${requiredFieldMap['dateDelivrancePassport']}"><span class="text-danger">*</span></c:if></label>
                                         <input type="date" class="form-control" id="dateDelivrancePassport" name="dateDelivrancePassport"
                                             value="${not empty demandeForm.dateDelivrancePassport ? demandeForm.dateDelivrancePassport : ''}" >
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="dateExpirationPassport" class="form-label"><i class="fas fa-calendar-times me-2"></i>Date d'expiration</label>
+                                        <label for="dateExpirationPassport" class="form-label"><i class="fas fa-calendar-times me-2"></i>Date d'expiration <c:if test="${requiredFieldMap['dateExpirationPassport']}"><span class="text-danger">*</span></c:if></label>
                                         <input type="date" class="form-control" id="dateExpirationPassport" name="dateExpirationPassport"
                                             value="${not empty demandeForm.dateExpirationPassport ? demandeForm.dateExpirationPassport : ''}" >
                                     </div>
