@@ -10,6 +10,8 @@ import com.visa.bo.models.passport.Passport;
 
 public interface PassportRepository extends JpaRepository<Passport, String> {
 
+    Optional<Passport> findByNumero(String numero);
+
     @Query("SELECT p FROM Passport p WHERE p.numero = :numero AND p.demandeur.idDemandeur = :idDemandeur")
     Optional<Passport> findByNumeroAndIdDemandeur(@Param("numero") String numero, @Param("idDemandeur") String idDemandeur);
 }

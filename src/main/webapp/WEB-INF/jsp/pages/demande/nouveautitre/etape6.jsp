@@ -32,7 +32,7 @@
                                                     </c:if>
                                                     >
                                                     <label class="form-check-label" for="piece_${piece.idPiece}">
-                                                        <i class="fas fa-file me-2"></i>${piece.libelle}
+                                                        <i class="fas fa-file me-2"></i>${piece.libelle} <c:if test="${piece.obligatoire}"><span class="text-danger">*</span></c:if>
                                                     </label>
                                                 </div>
                                             </c:forEach>

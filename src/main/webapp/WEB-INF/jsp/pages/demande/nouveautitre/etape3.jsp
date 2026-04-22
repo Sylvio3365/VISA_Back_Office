@@ -23,7 +23,7 @@
                                     value="${not empty demandeForm.idVisaTransformable ? demandeForm.idVisaTransformable : ''}">
 
                                 <div class="mb-4">
-                                    <label for="refVisa" class="form-label"><i class="fas fa-barcode me-2"></i>Référence Visa</label>
+                                    <label for="refVisa" class="form-label"><i class="fas fa-barcode me-2"></i>Référence Visa <c:if test="${requiredFieldMap['refVisa']}"><span class="text-danger">*</span></c:if></label>
                                     <div class="input-group">
                                         <input type="text" class="form-control" id="refVisa" name="refVisa"
                                             value="${not empty demandeForm.refVisa ? demandeForm.refVisa : ''}" placeholder="Ex: VISA2025001">
@@ -35,12 +35,12 @@
 
                                 <div class="row mb-4">
                                     <div class="col-md-6">
-                                        <label for="dateDebut" class="form-label"><i class="fas fa-calendar-check me-2"></i>Date de début</label>
+                                        <label for="dateDebut" class="form-label"><i class="fas fa-calendar-check me-2"></i>Date de début <c:if test="${requiredFieldMap['dateDebut']}"><span class="text-danger">*</span></c:if></label>
                                         <input type="date" class="form-control" id="dateDebut" name="dateDebut"
                                             value="${not empty demandeForm.dateDebut ? demandeForm.dateDebut : ''}" >
                                     </div>
                                     <div class="col-md-6">
-                                        <label for="dateFin" class="form-label"><i class="fas fa-calendar-check me-2"></i>Date de fin</label>
+                                        <label for="dateFin" class="form-label"><i class="fas fa-calendar-check me-2"></i>Date de fin <c:if test="${requiredFieldMap['dateFin']}"><span class="text-danger">*</span></c:if></label>
                                         <input type="date" class="form-control" id="dateFin" name="dateFin"
                                             value="${not empty demandeForm.dateFin ? demandeForm.dateFin : ''}" >
                                     </div>

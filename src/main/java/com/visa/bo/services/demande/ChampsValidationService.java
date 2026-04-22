@@ -1,7 +1,9 @@
 package com.visa.bo.services.demande;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -17,6 +19,18 @@ public class ChampsValidationService {
 
     @Autowired
     private ChampsRepository champsRepository;
+
+    public Set<String> getRequiredFieldNames() {
+        Set<String> requiredFields = new HashSet<>();
+
+        for (Champs champ : champsRepository.findAll()) {
+            if (Integer.valueOf(1).equals(champ.getEstObligatoire())) {
+                requiredFields.add(snakeToCamel(champ.getLibelle()));
+            }
+        }
+
+        return requiredFields;
+    }
 
     public List<String> validateRequiredFields(DemandeForm form) {
         List<String> errors = new ArrayList<>();
